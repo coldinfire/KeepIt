@@ -10,6 +10,9 @@
 {{ with .Site.Params.Social.Instagram }}
 <a href="https://www.instagram.com/{{.}}/" target="_blank" rel="me noopener noreffer" target="_blank"><i class="iconfont icon-instagram"></i></a> 
 {{ end }}
+{{ with .Site.Params.Social.Wechat }} 
+<a href="javascript:void(0);" target="_blank" rel="me noopener noreffer" onclick="document.getElementById('lightbox').style.display='inline';" target="_blank"><i class="iconfont icon-reddit"></i></a>
+{{ end }}
 {{ with .Site.Params.Social.Email}}
 <a href="mailto:{{.}}" rel="me noopener noreffer"><i class="iconfont icon-mail" target="_blank"></i></a>
 {{ end }}
