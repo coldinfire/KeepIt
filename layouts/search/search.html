@@ -1,0 +1,114 @@
+{{ define "content" }}
+<script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.6.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.7.1/dist/instantsearch.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.7.1/dist/instantsearch-theme-algolia.min.css">
+<div id="search-box">
+    <!-- SearchBox widget will appear here -->
+  </div>
+  <!-- include algolia logo -->
+ <!-- <img src="https://www.algolia.com/static/logo-algolia-nebula-blue-full-57c56ea4b99b30c8f2cc03b65e8bb849.png" style="float:right" width="80px"></img> -->
+  <!-- <a href="https://www.algolia.com/" target="_blank"><img src="https://www.algolia.com/static/logo-algolia-nebula-blue-full-57c56ea4b99b30c8f2cc03b65e8bb849.png"></img></a> -->
+  <div id="hits">
+    <!-- Hits widget will appear here -->
+  </div>
+  <div id="pagination">
+    <!-- Pagination widget will appear here -->
+  </div>
+
+<script>
+//initialize instantsearch
+const search = instantsearch({
+  appId: 'JRM58A7YG5',
+  apiKey: 'd3ae9a6a7afd1833000ccd8c9def9523',
+  indexName: 'SmallFire',
+  urlSync: true
+});
+
+const hitTemplate = function(hit) {
+/*  if (hit === null){
+      return;
+  }*/
+  let date = '';
+  if (hit.date) {
+    date = moment.unix(hit.date).format('MMM D, YYYY');
+  }
+  let url = `${hit.url}#${hit.anchor}`;
+  const title = hit._highlightResult.title.value;
+  let breadcrumbs = '';
+  if (hit._highlightResult.headings) {
+    breadcrumbs = hit._highlightResult.headings.map(match => {
+      return `<span class="post-breadcrumb">${match.value}</span>`
+    }).join(' > ')
+  }
+  let content = "" ; 
+  if (hit._highlightResult.content){
+      content = hit._highlightResult.content.value;
+  }
+  else{
+      content = hit.summary;
+  }
+  return `
+    <div class="post-item">
+      <span class="post-meta">${date}</span>
+      <h2><a class="post-link" href="${url}">${title}</a></h2>
+      <a href="${url}" class="post-breadcrumbs">${breadcrumbs}</a>
+      <div class="post-snippet">${content}</div>
+    </div>
+  `;
+}
+search.addWidget(
+  instantsearch.widgets.searchBox({
+    container: '#search-box',
+    placeholder: 'Search into posts...',
+    poweredBy: true // This is required if you're on the free Community plan
+  })
+);
+search.addWidget(
+  instantsearch.widgets.hits({
+    container: '#hits',
+    templates: {
+      item: hitTemplate
+    }
+  })
+);
+search.start();
+</script>
+
+<style>
+.ais-search-box {
+  max-width: 100%;
+  margin-bottom: 15px;
+}
+.post-item {
+  margin-bottom: 30px;
+}
+.post-link .ais-Highlight {
+  color: #111;
+  font-style: normal;
+  text-decoration: underline;
+}
+.post-breadcrumbs {
+  color: #424242;
+  display: block;
+}
+.post-breadcrumb {
+  font-size: 18px;
+  color: #424242;
+}
+.post-breadcrumb .ais-Highlight {
+  font-weight: bold;
+  font-style: normal;
+}
+.post-snippet .ais-Highlight {
+  color: #2a7ae2;
+  font-style: normal;
+  font-weight: bold;
+}
+.post-snippet img {
+  display: none;
+}
+</style>
+ 
+{{ end }}
+
